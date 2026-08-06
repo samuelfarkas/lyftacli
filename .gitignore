@@ -1,0 +1,28 @@
+# Go binaries and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/lyfta
+
+# Go test and coverage artifacts
+*.test
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+
+# Build output
+/.tmp/
+/bin/
+/dist/
+
+# Local Go workspace
+go.work
+go.work.sum
+
+# Local secrets and captured traffic
+.env
+token
+*.har
