@@ -36,7 +36,7 @@ It installs the latest release to `~/.local/bin/lyfta`. Add `export PATH="$HOME/
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/samuelfarkas/lyftacli/master/install.sh \
-  | LYFTA_VERSION=0.0.0 LYFTA_INSTALL_DIR="$HOME/bin" sh
+  | LYFTA_VERSION=0.1.0 LYFTA_INSTALL_DIR="$HOME/bin" sh
 ```
 
 ### Manual install
