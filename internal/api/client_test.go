@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"lyftacli/internal/errs"
+	"github.com/samuelfarkas/lyftacli/internal/errs"
 )
 
 type roundTripFunc func(*http.Request) (*http.Response, error)

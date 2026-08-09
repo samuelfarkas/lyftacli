@@ -13,10 +13,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"lyftacli/internal/api"
-	"lyftacli/internal/errs"
-	"lyftacli/internal/spec"
-	"lyftacli/internal/version"
+	"github.com/samuelfarkas/lyftacli/internal/api"
+	"github.com/samuelfarkas/lyftacli/internal/errs"
+	"github.com/samuelfarkas/lyftacli/internal/spec"
+	"github.com/samuelfarkas/lyftacli/internal/version"
 )
 
 type runtimeConfig struct {

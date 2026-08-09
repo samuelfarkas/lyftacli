@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strconv"
 
-	"lyftacli/internal/errs"
+	"github.com/samuelfarkas/lyftacli/internal/errs"
 )
 
 func (c *Client) PaginatePages(ctx context.Context, path, itemKey string, params url.Values, maxPages int) (map[string]any, error) {

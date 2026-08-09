@@ -8,7 +8,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"lyftacli/internal/errs"
+	"github.com/samuelfarkas/lyftacli/internal/errs"
 )
 
 func (a *App) workoutsCommand() *cobra.Command {

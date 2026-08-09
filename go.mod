@@ -1,4 +1,4 @@
-module lyftacli
+module github.com/samuelfarkas/lyftacli
 
 go 1.25.0
 
