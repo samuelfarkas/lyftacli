@@ -8,7 +8,22 @@
 
 ## Install
 
-Download the archive for your platform and `checksums.txt` from the [latest release](../../releases/latest) (no runtime required):
+On macOS or Linux, run the checksum-verified installer (no runtime or root access required):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/samuelfarkas/lyftacli/master/install.sh | sh
+```
+
+It installs the latest release to `~/.local/bin/lyfta`. Add `export PATH="$HOME/.local/bin:$PATH"` to your shell startup file if needed. To select another release or destination:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/samuelfarkas/lyftacli/master/install.sh \
+  | LYFTA_VERSION=0.0.0 LYFTA_INSTALL_DIR="$HOME/bin" sh
+```
+
+### Manual install
+
+Download the archive for your platform and `checksums.txt` from the [latest release](../../releases/latest):
 
 | System | Archive |
 | --- | --- |
@@ -24,12 +39,10 @@ archive=lyfta_0.1.0_darwin_arm64.tar.gz
 tar -xzf "$archive"
 install -d "$HOME/.local/bin"
 install -m 0755 "${archive%.tar.gz}/lyfta" "$HOME/.local/bin/lyfta"
-lyfta --version
+"$HOME/.local/bin/lyfta" --version
 ```
 
-Add `export PATH="$HOME/.local/bin:$PATH"` to your shell startup file if needed.
-
-- **macOS Gatekeeper**: binaries are not notarized. After verifying the checksum, run `xattr -d com.apple.quarantine lyfta`.
+- **macOS Gatekeeper**: binaries are not notarized. If Gatekeeper blocks a manually downloaded binary after checksum verification, run `xattr -d com.apple.quarantine "$HOME/.local/bin/lyfta"`.
 - **Windows**: expand the ZIP and move `lyfta.exe` to a directory on `PATH`.
 
 ### Build from source
