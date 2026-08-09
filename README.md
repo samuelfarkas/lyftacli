@@ -93,6 +93,23 @@ go build -trimpath -ldflags '-X github.com/samuelfarkas/lyftacli/internal/versio
 
 Cross-compile with the normal Go variables (`CGO_ENABLED=0 GOOS=... GOARCH=...`).
 
+### Uninstall
+
+If you used the installer or the default `make install` location:
+
+```bash
+rm -f "$HOME/.local/bin/lyfta"
+```
+
+From a cloned repository, you can also run `make uninstall`. If you used `LYFTA_INSTALL_DIR` or `BINDIR`, remove `lyfta` from that directory instead.
+
+For an installation made with `go install`:
+
+```bash
+gobin=$(go env GOBIN)
+rm -f "${gobin:-$(go env GOPATH)/bin}/lyfta"
+```
+
 ## Authentication
 
 Prefer a mounted secret file so the token never appears in arguments or process listings:
