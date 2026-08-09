@@ -14,8 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"lyftacli/internal/errs"
-	"lyftacli/internal/version"
+	"github.com/samuelfarkas/lyftacli/internal/errs"
+	"github.com/samuelfarkas/lyftacli/internal/version"
 )
 
 const (

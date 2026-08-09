@@ -1,6 +1,6 @@
 package spec
 
-import "lyftacli/internal/api"
+import "github.com/samuelfarkas/lyftacli/internal/api"
 
 const schemaDialect = "https://json-schema.org/draft/2020-12/schema"
 

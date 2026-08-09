@@ -1,14 +1,32 @@
-# lyftacli
+# Lyfta CLI
 
-`lyfta` is a standalone, JSON-first CLI for the [Lyfta Developer and Coach APIs](https://my.lyfta.app/community/api#coach-api-beta), built for shell scripts and AI agents.
+[![CI](https://github.com/samuelfarkas/lyftacli/actions/workflows/ci.yml/badge.svg)](https://github.com/samuelfarkas/lyftacli/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/samuelfarkas/lyftacli)](https://github.com/samuelfarkas/lyftacli/releases/latest)
+[![License: MIT](https://img.shields.io/github/license/samuelfarkas/lyftacli)](LICENSE)
 
-- Results go to stdout as compact JSON; failures go to stderr as JSON with documented non-zero exit codes.
-- Covers every documented endpoint: workouts, exercises, progress, Coach API, collection and template creation, plus a generic `request` command for future beta endpoints.
-- The API creates workout **templates** inside collections; logging a completed workout is not documented.
+`lyfta` is an unofficial, JSON-first CLI for the [Lyfta Developer and Coach APIs](https://my.lyfta.app/community/api#coach-api-beta). Use it to export workout history, check progress, or create programs from a shell script or AI agent.
+
+- Successful commands print compact JSON to stdout. Errors go to stderr as JSON with a documented exit code.
+- The CLI covers workouts, exercises, progress, coaching clients, collections, and workout templates.
+- Write commands validate payloads locally and support `--dry-run`. They do not retry non-idempotent requests.
+- `lyfta capabilities` returns the command contracts, exit codes, and JSON Schemas without asking for credentials.
+
+## Quick start
+
+```console
+$ lyfta capabilities | jq -c '[.commands[].command]'
+["capabilities","mappings","workouts list","workouts summary","exercises list","exercises library","exercises progress","clients list","collections create","templates create","request"]
+
+$ export LYFTA_API_TOKEN='your-api-key'
+$ lyfta workouts summary --all |
+    jq '[.workouts[] | {date: .workout_perform_date, workout: .title, volume: .total_volume}]'
+```
+
+Generate an API key on the [Lyfta API Access page](https://my.lyfta.app/community/api#api-key). Generating a new key revokes the previous key.
 
 ## Install
 
-On macOS or Linux, run the checksum-verified installer (no runtime or root access required):
+On macOS or Linux, run the installer (no runtime or root access required). It verifies the downloaded archive against the release SHA-256 checksums.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/samuelfarkas/lyftacli/master/install.sh | sh
@@ -42,12 +60,24 @@ install -m 0755 "${archive%.tar.gz}/lyfta" "$HOME/.local/bin/lyfta"
 "$HOME/.local/bin/lyfta" --version
 ```
 
+GitHub also signs build provenance for release archives. If you have the GitHub CLI, verify a downloaded archive with:
+
+```bash
+gh attestation verify "$archive" --repo samuelfarkas/lyftacli
+```
+
 - **macOS Gatekeeper**: binaries are not notarized. If Gatekeeper blocks a manually downloaded binary after checksum verification, run `xattr -d com.apple.quarantine "$HOME/.local/bin/lyfta"`.
 - **Windows**: expand the ZIP and move `lyfta.exe` to a directory on `PATH`.
 
 ### Build from source
 
 Requires Go 1.25+:
+
+```bash
+go install github.com/samuelfarkas/lyftacli/cmd/lyfta@latest
+```
+
+From a clone of the repository:
 
 ```bash
 make install                          # installs to ~/.local/bin (override with BINDIR=...)
@@ -58,7 +88,7 @@ go build -trimpath -o bin/lyfta ./cmd/lyfta   # without Make
 Source builds report version `dev`; tagged release builds inject the tag version. To inject a version locally:
 
 ```bash
-go build -trimpath -ldflags '-X lyftacli/internal/version.Value=0.1.0' -o dist/lyfta ./cmd/lyfta
+go build -trimpath -ldflags '-X github.com/samuelfarkas/lyftacli/internal/version.Value=0.1.0' -o dist/lyfta ./cmd/lyfta
 ```
 
 Cross-compile with the normal Go variables (`CGO_ENABLED=0 GOOS=... GOARCH=...`).
@@ -96,7 +126,7 @@ lyfta exercises library --search 'bench press' --limit 10
 lyfta exercises progress --exercise-id 31 --duration 365
 ```
 
-`--all` combines pages and adds `pages_fetched` and `truncated` (`true` means `--max-pages` stopped early).
+`--all` combines pages and reports `pages_fetched` and `truncated` (`true` means `--max-pages` stopped early). Page-based commands put these fields at the top level; `exercises library` puts them in `data.pagination`.
 
 ### Coach API
 
@@ -146,7 +176,7 @@ lyfta templates create --collection-id 42 --workout workout.json
 
 For small payloads, pass fields directly with `--title` and `--exercise-json`. Options: `--client-id` for a coaching client, `--picture-file` to encode a local image as a data URI, `--payload` for the complete request.
 
-Write commands validate payload structure locally — including during `--dry-run` — before reading credentials or contacting Lyfta.
+Write commands validate payload structure locally, including during `--dry-run`, before reading credentials or contacting Lyfta.
 
 ### Forward-compatible requests
 
@@ -173,9 +203,11 @@ Example error:
 {"error":{"message":"Invalid API key","status_code":401,"type":"api_error"},"ok":false}
 ```
 
-Reliability: whole-request timeout, Ctrl-C cancellation, 16 MiB response cap, `Retry-After` support, retries for 429/transient 5xx/connection failures on idempotent methods only — POST and PATCH are never replayed.
+Reliability: per-attempt timeout, Ctrl-C cancellation, a 16 MiB response cap, and `Retry-After` support. The CLI retries 429 responses, transient 5xx responses, and connection failures only for idempotent methods. It never replays POST or PATCH requests.
 
 ## Development
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow and [SECURITY.md](SECURITY.md) for private vulnerability reports.
 
 ```bash
 go test ./...
@@ -195,3 +227,7 @@ git tag v0.1.0 && git push origin v0.1.0
 ```
 
 It builds the six archives, generates `checksums.txt`, injects the version, and publishes a GitHub Release using the built-in `GITHUB_TOKEN`.
+
+## License
+
+[MIT](LICENSE). Lyfta does not maintain or endorse this independent project.

@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/signal"
 
-	"lyftacli/internal/cli"
+	"github.com/samuelfarkas/lyftacli/internal/cli"
 )
 
 func main() {
